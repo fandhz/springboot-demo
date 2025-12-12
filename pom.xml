@@ -5,100 +5,59 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- ==== IDENTITAS PROJEK ==== -->
     <groupId>com.example</groupId>
-    <artifactId>springboot-demo</artifactId>
-    <version>1.0.0</version>
-    <packaging>jar</packaging>
+    <artifactId>demo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>demo</name>
+    <description>Spring Boot 3.2.12 patched project</description>
 
-    <!-- ==== INHERIT SPRING BOOT BOM ==== -->
+    <!-- Spring Boot 3.2.12 (latest patch of 3.2.x) -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.12</version>
+        <relativePath/>
     </parent>
 
     <properties>
         <java.version>17</java.version>
 
-        <!-- PATCH untuk kerentanan SAST/SCA -->
-        <tomcat.version>10.1.40</tomcat.version>
-        <spring.framework.version>6.1.16</spring.framework.version>
+        <!-- Override Tomcat patch ke versi aman -->
+        <tomcat.version>10.1.50</tomcat.version>
+
+        <!-- Override JSON-Smart -->
+        <json-smart.version>2.5.1</json-smart.version>
     </properties>
 
-    <!-- ==== OVERRIDE VERSI RENTAN (SAST/SCA FIX) ==== -->
-    <dependencyManagement>
-        <dependencies>
-
-            <!-- SPRING FRAMEWORK PATCH -->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>${spring.framework.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${spring.framework.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-expression</artifactId>
-                <version>${spring.framework.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${spring.framework.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${spring.framework.version}</version>
-            </dependency>
-
-            <!-- TOMCAT PATCH -->
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-core</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-el</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-websocket</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>tomcat-annotations-api</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
-
-        </dependencies>
-    </dependencyManagement>
-
-    <!-- ==== DEPENDENCIES NORMAL ==== -->
     <dependencies>
 
-        <!-- Web -->
+        <!-- SPRING WEB (otomatis ambil Tomcat Embedded dari Spring Boot BOM) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- Testing -->
+        <!-- JSON-SMART override (karena ditemukan vulnerability) -->
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>${json-smart.version}</version>
+        </dependency>
+
+        <!-- OPTIONAL: Actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Lombok (jika dipakai) -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -107,7 +66,32 @@
 
     </dependencies>
 
-    <!-- ==== MAVEN BUILD CONFIG ==== -->
+    <!-- Force Tomcat patch 10.1.50 untuk embed-* API -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>${tomcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-el</artifactId>
+                <version>${tomcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-websocket</artifactId>
+                <version>${tomcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-annotations-api</artifactId>
+                <version>${tomcat.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <build>
         <plugins>
             <plugin>
