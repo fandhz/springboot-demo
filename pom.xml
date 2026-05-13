@@ -1,96 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+<project xmlns="apache.org"
+         xmlns:xsi="w3.org"
+         xsi:schemaLocation="apache.org apache.org">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.example</groupId>
-    <artifactId>demo</artifactId>
+    <artifactId>vulnerable-app</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
-    <description>Spring Boot 3.2.12 patched project</description>
+    <name>vulnerable-app</name>
+    <description>Demo Vulnerability Spring Boot 3.2.1</description>
 
-    <!-- Spring Boot 3.2.12 (latest patch of 3.2.x) -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.1</version>
-        <relativePath/>
+        <version>3.2.1</version> <!-- Versi Rentan -->
+        <relativePath/> 
     </parent>
 
     <properties>
         <java.version>17</java.version>
-
-        <!-- Override Tomcat patch ke versi aman -->
-        <tomcat.version>10.1.50</tomcat.version>
-
-        <!-- Override JSON-Smart -->
-        <json-smart.version>2.5.1</json-smart.version>
-    </properties> 
+    </properties>
 
     <dependencies>
-
-        <!-- SPRING WEB (otomatis ambil Tomcat Embedded dari Spring Boot BOM) -->
+        <!-- Menyalakan fitur Web MVC -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- JSON-SMART override (karena ditemukan vulnerability) -->
+        <!-- Menyalakan fitur Spring Security -->
         <dependency>
-            <groupId>net.minidev</groupId>
-            <artifactId>json-smart</artifactId>
-            <version>${json-smart.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- OPTIONAL: Actuator -->
+        <!-- Menyalakan Actuator Endpoints (Pemicu CVE-2025-22235) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
-        <!-- Lombok (jika dipakai) -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- Test -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
-
-    <!-- Force Tomcat patch 10.1.50 untuk embed-* API -->
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-core</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-el</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-websocket</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>tomcat-annotations-api</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <plugins>
@@ -100,5 +49,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
